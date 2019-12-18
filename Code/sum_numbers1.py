@@ -13,6 +13,10 @@
 # - link catre prezentare??????
 # - articol? nu cred, pt ca e o idee "imprumutata"
 
+############# Important note! ##################
+# Make all imports from either keras or tensorflow.keras
+
+
 # In[1]:
 
 
@@ -138,8 +142,6 @@ def encode_numbers(numbers_dataset, dataset_size, max_lenght = 3, is_train = Tru
         a,b = pad_sequences([a,b],maxlen = max_lenght, value=10)
         x = np.concatenate([a,b])
 
-      print('x:', x)
-      print('x:', enumerate(x))
       for j, char in enumerate(x):
         X[i, j, char] = 1
        
@@ -167,11 +169,11 @@ X,Y = encode_numbers(numbers_dataset, dataset_size, is_train=True)
 #   Y[i] = y
 
 print('dataset size:', dataset_size)
-print("#########")
-print(X[0:10])
+# print("#########")
+# print(X[0:10])
 
-print(X.size)
-print(X.shape)
+# print(X.size)
+# print(X.shape)
 # print(Y[0:4])
 
 
@@ -245,7 +247,11 @@ print(model.summary())
 # # In[ ]:
 max_lenght = 3
 # X = X.resize(dataset_size, (max_lenght)*2, 11)
-model.fit(X, Y, epochs=20)
+# model.fit(X, Y, epochs=20)
+# model.fit(X, Y, epochs=50)
+
+
+
 # model.fit(X, Y, epochs=100)
 
 
@@ -298,6 +304,15 @@ numbers_dataset_test, sum_dataset_test = generate_random_number_dataset(dataset_
 
 X_test,Y_test = encode_numbers(numbers_dataset_test, dataset_size_test)
 
+# from tensorflow.python.keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping
+
+# callback = EarlyStopping(monitor='val_loss', patience=3,min_delta=0.0001)
+callback = EarlyStopping(monitor='val_loss', patience=3,min_delta=0.0001)
+model.fit(X, Y,  callbacks=[callback], epochs=50, validation_data=(X_test, Y_test), validation_freq=1)
+# model.fit(X, Y,  callbacks=[callback], epochs=100, validation_data=(X_test, Y_test), validation_freq=1)
+
+
 
 # # In[ ]:
 
@@ -335,8 +350,8 @@ plt.show()
 
 
 
-# MODEL_NAME = "SUM_NUMBERS1.h5"
-# model.save(MODEL_NAME)
+MODEL_NAME = "SUM_NUMBERS3.h5"
+model.save(MODEL_NAME)
 # # for loading model:
 # # model = load_model('sum_digits_RNN.h5')
 
